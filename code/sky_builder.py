@@ -4,9 +4,9 @@ from ray_solver import get_ray_origin
 
 # File parameters
 
-save_name = "fig7b"
-output_width = 500
-output_height = 500
+save_name = "fig7b2"
+output_width = 100
+output_height = 100
 
 # Camera position
 
@@ -45,16 +45,16 @@ for n in range(output_height):
             sol = get_ray_origin(l_cam, theta_cam, phi_cam, theta_cs, phi_cs)
             l, theta, phi, _, _ = sol.y[:,-1]
             theta = np.abs(theta) % np.pi
-            phi = np.abs(phi) % 2*np.pi
+            phi = np.abs(phi) % (2*np.pi)
 
             if l > 0:
-                sphere_n = upper_sphere_image.size[1] * int(np.floor(theta/np.pi))
-                sphere_m = upper_sphere_image.size[0] * int(np.floor(phi/2/np.pi))
+                sphere_n = int(np.fix(upper_sphere_image.size[1] * theta/np.pi))
+                sphere_m = int(np.fix(upper_sphere_image.size[0] * phi/2/np.pi))
                 camera_sky_map[n, m] = upper_sphere_map[sphere_n, sphere_m]
             elif l < 0:
-                sphere_n = lower_sphere_image.size[1] * int(np.floor(theta/np.pi))
-                sphere_m = lower_sphere_image.size[0] * int(np.floor(phi/2/np.pi))
+                sphere_n = int(np.fix(lower_sphere_image.size[1] * theta/np.pi))
+                sphere_m = int(np.fix(lower_sphere_image.size[0] * phi/2/np.pi))
                 camera_sky_map[n, m] = lower_sphere_map[sphere_n, sphere_m]
-
+            
 camera_sky_image = Image.fromarray(camera_sky_map)
 camera_sky_image.save(f"results/{save_name}.jpg")

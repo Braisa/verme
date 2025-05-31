@@ -49,4 +49,4 @@ def get_ray_origin(l0, theta0, phi0, theta_cs, phi_cs):
 
     # Runge-Kutta solving
 
-    return solve_ivp(fun = diff, t_span = (0, -1e5), y0 = initial_coords, method = "RK45")
+    return solve_ivp(fun = diff, t_span = (0, -1e3), y0 = initial_coords, method = "RK45")
