@@ -1,17 +1,36 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
+from numba import jit
 
 # Wormhole parameters
 
 rho = 1
-a = 1
-M = 1
+a = .5
+W = .05
+M = W / 1.42953
+
+# Heaviside function
+
+@jit
+def heaviside(l):
+    if l < 0.0:
+        return 0.0
+    else:
+        return 1.0
 
 # Metric radial function
-x = lambda l : 2*(np.abs(l) - a)/(np.pi*M)
-r = lambda l : rho + np.heaviside(np.abs(l)/a, 1) * M * (x(l)*np.arctan(x(l)) - .5*np.log(1+x(l)**2))
-dr_dl = lambda l : np.heaviside(np.abs(l)/a, 1) * 2/np.pi * np.sign(l) * np.arctan(x(l))
+@jit
+def x(l):
+    X = 2*(np.abs(l) - a)/(np.pi*M)
+    return X
+@jit
+def r(l):
+    R = rho + heaviside(np.abs(l) - a) * M * (x(l)*np.arctan(x(l)) - .5*np.log(1+x(l)**2))
+    return R
+@jit
+def dr_dl(l):
+    DR_DL = heaviside(np.abs(l) - a) * 2/np.pi * np.sign(l) * np.arctan(x(l))
+    return DR_DL
 
 def get_ray_origin(l0, theta0, phi0, theta_cs, phi_cs):
 
@@ -33,14 +52,15 @@ def get_ray_origin(l0, theta0, phi0, theta_cs, phi_cs):
     B = p_theta(l0, theta0)**2 + b**2 * np.sin(theta0)**-2
 
     # Ray differential equations
-    # coords = (l, theta, phi, p_l, p_theta)
-
-    diff = lambda t, coords : (coords[3],
-                               coords[4] * r(coords[0])**-2,
-                               b * r(coords[0])**-2 * np.sin(coords[1])**-2,
-                               B**2 * r(coords[0])**-3 * dr_dl(coords[0]),
-                               b**2 * r(coords[0])**-2 * np.cos(coords[1]) * np.sin(coords[1])**-3
-                               )
+    @jit
+    def diff(t, coords):
+        l, theta, phi, p_l, p_theta = coords
+        dl = p_l
+        dtheta = p_theta * r(l)**-2
+        dphi = b * r(l)**-2 * np.sin(theta)**-2
+        dp_l = B**2 * r(l)**-3 * dr_dl(l)
+        dp_theta = B**2 * r(l)**-2 * np.cos(theta) * np.sin(theta)**-3
+        return (dl, dtheta, dphi, dp_l, dp_theta)
         
     # Initial coordinates
     
