@@ -1,10 +1,15 @@
 import numpy as np
 from PIL import Image
+import pickle
 from ray_solver import get_ray_origin
+
+# Map parameters
+
+map_name = "fig7b"
 
 # File parameters
 
-save_name = "fig7b2"
+save_name = "skibidi"
 output_width = 100
 output_height = 100
 
@@ -30,31 +35,29 @@ lower_sphere_map = np.asarray(lower_sphere_image)
 theta_step = np.pi / output_height
 phi_step = 2*np.pi / output_width
 
+# Open map
+
+with open(f"maps/map_{map_name}.pck", "rb") as file_handle:
+    celestial_map_theta, celestial_map_phi, celestial_signs = pickle.load(file_handle)
+
 # Get pixel in corresponding celestial sphere for each pixel in the camera sky
 
 camera_sky_map = np.zeros((output_height, output_width, 3), dtype = np.uint8)
 
 for n in range(output_height):
-    theta_cs = n * theta_step
     for m in range(output_width):
-        if True:
-            phi_cs = m * phi_step
-            
-            print(n, m)
+        
+        theta = celestial_map_theta((n, m))
+        phi = celestial_map_phi((n, m))
 
-            sol = get_ray_origin(l_cam, theta_cam, phi_cam, theta_cs, phi_cs)
-            l, theta, phi, _, _ = sol.y[:,-1]
-            theta = np.abs(theta) % np.pi
-            phi = np.abs(phi) % (2*np.pi)
-
-            if l > 0:
-                sphere_n = int(np.fix(upper_sphere_image.size[1] * theta/np.pi))
-                sphere_m = int(np.fix(upper_sphere_image.size[0] * phi/2/np.pi))
-                camera_sky_map[n, m] = upper_sphere_map[sphere_n, sphere_m]
-            elif l < 0:
-                sphere_n = int(np.fix(lower_sphere_image.size[1] * theta/np.pi))
-                sphere_m = int(np.fix(lower_sphere_image.size[0] * phi/2/np.pi))
-                camera_sky_map[n, m] = lower_sphere_map[sphere_n, sphere_m]
+        if celestial_signs[n, m] > 0:
+            sphere_n = int(np.fix(upper_sphere_image.size[1] * theta/np.pi))
+            sphere_m = int(np.fix(upper_sphere_image.size[0] * phi/2/np.pi))
+            camera_sky_map[n, m] = upper_sphere_map[sphere_n, sphere_m]
+        elif celestial_signs[n, m] < 0:
+            sphere_n = int(np.fix(lower_sphere_image.size[1] * theta/np.pi))
+            sphere_m = int(np.fix(lower_sphere_image.size[0] * phi/2/np.pi))
+            camera_sky_map[n, m] = lower_sphere_map[sphere_n, sphere_m]
             
 camera_sky_image = Image.fromarray(camera_sky_map)
 camera_sky_image.save(f"results/{save_name}.jpg")
