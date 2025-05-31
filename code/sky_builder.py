@@ -9,9 +9,9 @@ map_name = "fig7b"
 
 # File parameters
 
-save_name = "skibidi"
-output_width = 100
-output_height = 100
+save_name = "wow"
+output_width = 300
+output_height = 300
 
 # Camera position
 
@@ -30,10 +30,10 @@ lower_sphere_image = Image.open(lower_sphere_path)
 upper_sphere_map = np.asarray(upper_sphere_image)
 lower_sphere_map = np.asarray(lower_sphere_image)
 
-# Get pixel size and step
+# Get angles
 
-theta_step = np.pi / output_height
-phi_step = 2*np.pi / output_width
+thetas = np.linspace(0, np.pi, output_height)
+phis = np.linspace(0, 2*np.pi, output_width)
 
 # Open map
 
@@ -44,17 +44,17 @@ with open(f"maps/map_{map_name}.pck", "rb") as file_handle:
 
 camera_sky_map = np.zeros((output_height, output_width, 3), dtype = np.uint8)
 
-for n in range(output_height):
-    for m in range(output_width):
+for n, theta_cs in enumerate(thetas):
+    for m, phi_cs in enumerate(phis):
         
-        theta = celestial_map_theta((n, m))
-        phi = celestial_map_phi((n, m))
+        theta = celestial_map_theta((theta_cs, phi_cs))
+        phi = celestial_map_phi((theta_cs, phi_cs))
 
-        if celestial_signs[n, m] > 0:
+        if celestial_signs((theta_cs, phi_cs)) > 0:
             sphere_n = int(np.fix(upper_sphere_image.size[1] * theta/np.pi))
             sphere_m = int(np.fix(upper_sphere_image.size[0] * phi/2/np.pi))
             camera_sky_map[n, m] = upper_sphere_map[sphere_n, sphere_m]
-        elif celestial_signs[n, m] < 0:
+        elif celestial_signs((theta_cs, phi_cs)) < 0:
             sphere_n = int(np.fix(lower_sphere_image.size[1] * theta/np.pi))
             sphere_m = int(np.fix(lower_sphere_image.size[0] * phi/2/np.pi))
             camera_sky_map[n, m] = lower_sphere_map[sphere_n, sphere_m]
