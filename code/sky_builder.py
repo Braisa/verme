@@ -5,15 +5,18 @@ from ray_solver import get_ray_origin
 
 # Map parameters
 
-map_name = "fig7b"
+map_name = "fig7b_test_2pi"
 
 # File parameters
 
 debug = True
 
-save_name = "fig7b"
+save_name = "fig7b_test_2pi"
 output_width = 300
 output_height = 300
+
+theta_range = (np.pi/2-np.pi/20, np.pi/2+np.pi/20)
+phi_range = (np.pi-np.pi/20, np.pi+np.pi/20)
 
 # Camera position
 
@@ -35,7 +38,7 @@ lower_sphere_map = np.asarray(lower_sphere_image)
 # Open map
 
 with open(f"maps/map_{map_name}.pck", "rb") as file_handle:
-    celestial_map_theta, celestial_map_phi, celestial_signs, theta_range, phi_range = pickle.load(file_handle)
+    celestial_map_theta, celestial_map_phi, celestial_signs = pickle.load(file_handle)
 
 # Get angles
 
@@ -54,16 +57,20 @@ for n, theta_cs in enumerate(thetas):
 
         print(n, m, end = "\r")
         
-        theta = celestial_map_theta((theta_cs, phi_cs))
-        phi = celestial_map_phi((theta_cs, phi_cs))
+        theta = celestial_map_theta((theta_cs, phi_cs)) % np.pi
+        phi = celestial_map_phi((theta_cs, phi_cs)) % (2*np.pi)
+
+        phi_move = .5 * (phi/np.pi + np.sign(np.pi - phi))
 
         if celestial_signs((theta_cs, phi_cs)) > 0:
             sphere_n = int(np.fix(upper_sphere_image.size[1] * theta/np.pi)) % upper_sphere_image.size[1]
             sphere_m = int(np.fix(upper_sphere_image.size[0] * phi/2/np.pi)) % upper_sphere_image.size[0]
+            #sphere_m = int(np.fix(upper_sphere_image.size[0] * phi_move))
             camera_sky_map[n, m] = upper_sphere_map[sphere_n, sphere_m]
         elif celestial_signs((theta_cs, phi_cs)) < 0:
             sphere_n = int(np.fix(lower_sphere_image.size[1] * theta/np.pi)) % lower_sphere_image.size[1]
             sphere_m = int(np.fix(lower_sphere_image.size[0] * phi/2/np.pi)) % lower_sphere_image.size[0]
+            #sphere_m = int(np.fix(lower_sphere_image.size[0] * phi_move))
             camera_sky_map[n, m] = lower_sphere_map[sphere_n, sphere_m]
         
         if debug:

@@ -6,20 +6,20 @@ import pickle
 
 # Map parameters
 
-save_name = "fig7b"
+save_name = "fig7b_test_2pi"
 theta_samples = 100
 phi_samples = 100
 
-theta_range = (np.pi/2 + -np.pi/20, np.pi/2 + np.pi/20)
-phi_range = (np.pi + -np.pi/20, np.pi + np.pi/20)
+theta_range = (np.pi/2-np.pi/20, np.pi/2+np.pi/20)
+phi_range = (np.pi-np.pi/20, np.pi+np.pi/20)
 
 # Camera position
 
 l_cam = 6.75
 theta_cam = np.pi/2
-phi_cam = 0
+phi_cam = 2*np.pi
 
-# Get meshgrid
+# Get angles
 
 thetas = np.linspace(theta_range[0], theta_range[1], theta_samples)
 phis = np.linspace(phi_range[0], phi_range[1], phi_samples)
@@ -27,7 +27,7 @@ phis = np.linspace(phi_range[0], phi_range[1], phi_samples)
 # Get mapping to celestial spheres from camera sky
 
 celestial_angles = np.zeros((theta_samples, phi_samples, 2))
-celestial_signs = np.zeros((theta_samples,phi_samples))
+celestial_signs = np.zeros((theta_samples, phi_samples))
 
 for n, theta_cs in enumerate(thetas):
     for m, phi_cs in enumerate(phis):
@@ -45,7 +45,7 @@ celestial_map_theta = RegularGridInterpolator((thetas, phis), celestial_angles[:
 celestial_map_phi = RegularGridInterpolator((thetas, phis), celestial_angles[:,:,1])
 celestial_map_sign = RegularGridInterpolator((thetas, phis), celestial_signs)
 
-celestial_map = (celestial_map_theta, celestial_map_phi, celestial_map_sign, theta_range, phi_range)
+celestial_map = (celestial_map_theta, celestial_map_phi, celestial_map_sign)
 
 # Save map
 
