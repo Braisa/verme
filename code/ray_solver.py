@@ -3,9 +3,9 @@ from scipy.integrate import solve_ivp
 
 # Wormhole parameters
 
-rho = 1
-a = .5
-W = .05
+rho = 50
+a = .5 * rho
+W = .05 * rho
 M = W / 1.42953
 
 # Metric radial function
@@ -24,14 +24,18 @@ def get_ray_origin(l0, theta0, phi0, theta_cs, phi_cs):
 
     # Incoming light ray momenta
 
-    p_l = lambda l, theta : -1 * np.cos(phi_cs) * np.sin(theta_cs)
-    p_theta = lambda l, theta : r(l) * np.cos(theta_cs)
-    p_phi = lambda l, theta : r(l) * np.sin(theta) * (-1 * np.sin(phi_cs) * np.sin(theta_cs))
+    p_l_0 = -1 * np.cos(phi_cs) * np.sin(theta_cs)
+    p_theta_0 = r(l0) * np.cos(theta_cs)
+    p_phi_0 = r(l0) * np.sin(theta0) * (-1 * np.sin(phi_cs) * np.sin(theta_cs))
 
     # Conserved quantities
 
-    b = p_phi(l0, theta0)
-    B = np.sqrt(p_theta(l0, theta0)**2 + b**2 * np.sin(theta0)**-2)
+    b = p_phi_0
+    B = np.sqrt(p_theta_0**2 + b**2 * np.sin(theta0)**-2)
+    
+    # Initial coordinates
+    
+    initial_coords = (l0, theta0, phi0, p_l_0, p_theta_0)
 
     # Ray differential equations
     # coords = (l, theta, phi, p_l, p_theta)
@@ -42,11 +46,10 @@ def get_ray_origin(l0, theta0, phi0, theta_cs, phi_cs):
         B**2 * r(coords[0])**-3 * dr_dl(coords[0]),
         b**2 * r(coords[0])**-2 * np.cos(coords[1]) * np.sin(coords[1])**-3
     )
-        
-    # Initial coordinates
-    
-    initial_coords = (l0, theta0, phi0, p_l(l0, theta0), p_theta(l0, theta0))
 
     # Runge-Kutta solving
 
-    return solve_ivp(fun = diff, t_span = (0, -1e3), y0 = initial_coords, method = "RK45")
+    sol = solve_ivp(fun = diff, t_span = (0, -1e3), y0 = initial_coords, method = "RK45")
+    sol.y[:,-1][1] = sol.y[:,-1][1] % np.pi
+    sol.y[:,-1][2] = sol.y[:,-1][2] % (2*np.pi)
+    return sol.y[:,-1]

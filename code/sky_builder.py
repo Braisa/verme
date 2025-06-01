@@ -15,16 +15,10 @@ save_name = "fig7b"
 output_width = 300
 output_height = 300
 
-# Camera position
-
-l_cam = 6.75
-theta_cam = np.pi/2
-phi_cam = 0
-
 # Open celestial spheres' images
 
-upper_sphere_path = "assets/InterstellarWormhole_Fig6b-1750x875.jpg"
-lower_sphere_path = "assets/InterstellarWormhole_Fig6a-1750x875.jpg"
+upper_sphere_path = "assets/Gargantua.jpg"
+lower_sphere_path = "assets/Saturn.jpg"
 
 upper_sphere_image = Image.open(upper_sphere_path)
 lower_sphere_image = Image.open(lower_sphere_path)
@@ -46,32 +40,39 @@ phis = np.linspace(phi_range[0], phi_range[1], output_width)
 
 camera_sky_map = np.zeros((output_height, output_width, 3), dtype = np.uint8)
 if debug:
-    debug_map = np.zeros((output_height, output_width), dtype = np.uint8)
+    debug_map = np.zeros((output_height, output_width, 3), dtype = np.uint8)
+    upper_debug_map, lower_debug_map = upper_sphere_map.copy(), lower_sphere_map.copy()
 
 
 for n, theta_cs in enumerate(thetas):
     for m, phi_cs in enumerate(phis):
-
+        
         print(n, m, end = "\r")
         
         theta = celestial_map_theta((theta_cs, phi_cs))
         phi = celestial_map_phi((theta_cs, phi_cs))
+        sign = celestial_signs((theta_cs, phi_cs))
 
-        if celestial_signs((theta_cs, phi_cs)) > 0:
+        if sign > 0:
             sphere_n = int(np.fix(upper_sphere_image.size[1] * theta/np.pi)) % upper_sphere_image.size[1]
             sphere_m = int(np.fix(upper_sphere_image.size[0] * phi/2/np.pi)) % upper_sphere_image.size[0]
             camera_sky_map[n, m] = upper_sphere_map[sphere_n, sphere_m]
-        elif celestial_signs((theta_cs, phi_cs)) < 0:
+            if debug:
+                c1, c2 = sphere_n/upper_sphere_image.size[1], sphere_m/upper_sphere_image.size[0]
+                upper_debug_map[sphere_n, sphere_m] = [255 * c1, 0, 255 * c2]
+                debug_map[n, m] = [255 * c1, 0, 255 * c2]
+        elif sign < 0:
             sphere_n = int(np.fix(lower_sphere_image.size[1] * theta/np.pi)) % lower_sphere_image.size[1]
             sphere_m = int(np.fix(lower_sphere_image.size[0] * phi/2/np.pi)) % lower_sphere_image.size[0]
             camera_sky_map[n, m] = lower_sphere_map[sphere_n, sphere_m]
-        
-        if debug:
-            debug_map[n, m] = celestial_signs((theta_cs, phi_cs))
-            
-camera_sky_image = Image.fromarray(camera_sky_map)
-camera_sky_image.save(f"results/{save_name}.jpg")
+            if debug:
+                c1, c2 = sphere_n/lower_sphere_image.size[1], sphere_m/lower_sphere_image.size[0]
+                lower_debug_map[sphere_n, sphere_m] = [255 * c1, 255 * c2, 0]
+                debug_map[n, m] = [255 * c1, 255 * c2, 0]
+
+Image.fromarray(camera_sky_map).save(f"results/{save_name}.jpg")
 
 if debug:
-    debug_image = Image.fromarray(debug_map)
-    debug_image.save(f"results/debug_{save_name}.jpg")
+    Image.fromarray(debug_map).save(f"results/debug_{save_name}.jpg")
+    Image.fromarray(upper_debug_map).save(f"results/debug_upper_{save_name}.jpg")
+    Image.fromarray(lower_debug_map).save(f"results/debug_lower_{save_name}.jpg")
