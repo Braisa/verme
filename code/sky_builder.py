@@ -9,7 +9,9 @@ map_name = "fig7b"
 
 # File parameters
 
-save_name = "corrix"
+debug = True
+
+save_name = "fig7b"
 output_width = 300
 output_height = 300
 
@@ -43,6 +45,9 @@ phis = np.linspace(phi_range[0], phi_range[1], output_width)
 # Get pixel in corresponding celestial sphere for each pixel in the camera sky
 
 camera_sky_map = np.zeros((output_height, output_width, 3), dtype = np.uint8)
+if debug:
+    debug_map = np.zeros((output_height, output_width), dtype = np.uint8)
+
 
 for n, theta_cs in enumerate(thetas):
     for m, phi_cs in enumerate(phis):
@@ -60,6 +65,13 @@ for n, theta_cs in enumerate(thetas):
             sphere_n = int(np.fix(lower_sphere_image.size[1] * theta/np.pi)) % lower_sphere_image.size[1]
             sphere_m = int(np.fix(lower_sphere_image.size[0] * phi/2/np.pi)) % lower_sphere_image.size[0]
             camera_sky_map[n, m] = lower_sphere_map[sphere_n, sphere_m]
+        
+        if debug:
+            debug_map[n, m] = celestial_signs((theta_cs, phi_cs))
             
 camera_sky_image = Image.fromarray(camera_sky_map)
 camera_sky_image.save(f"results/{save_name}.jpg")
+
+if debug:
+    debug_image = Image.fromarray(debug_map)
+    debug_image.save(f"results/debug_{save_name}.jpg")

@@ -10,7 +10,7 @@ save_name = "fig7b"
 theta_samples = 100
 phi_samples = 100
 
-theta_range = (np.pi/2 + -np.pi/10, np.pi/2 + np.pi/10)
+theta_range = (np.pi/2 + -np.pi/20, np.pi/2 + np.pi/20)
 phi_range = (np.pi + -np.pi/20, np.pi + np.pi/20)
 
 # Camera position
