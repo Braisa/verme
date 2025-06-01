@@ -31,7 +31,7 @@ def get_ray_origin(l0, theta0, phi0, theta_cs, phi_cs):
     # Conserved quantities
 
     b = p_phi(l0, theta0)
-    B = p_theta(l0, theta0)**2 + b**2 * np.sin(theta0)**-2
+    B = np.sqrt(p_theta(l0, theta0)**2 + b**2 * np.sin(theta0)**-2)
 
     # Ray differential equations
     # coords = (l, theta, phi, p_l, p_theta)
@@ -40,7 +40,7 @@ def get_ray_origin(l0, theta0, phi0, theta_cs, phi_cs):
         coords[4] * r(coords[0])**-2,
         b * r(coords[0])**-2 * np.sin(coords[1])**-2,
         B**2 * r(coords[0])**-3 * dr_dl(coords[0]),
-        B**2 * r(coords[0])**-2 * np.cos(coords[1]) * np.sin(coords[1])**-3
+        b**2 * r(coords[0])**-2 * np.cos(coords[1]) * np.sin(coords[1])**-3
     )
         
     # Initial coordinates

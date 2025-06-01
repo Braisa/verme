@@ -10,6 +10,9 @@ save_name = "fig7b"
 theta_samples = 100
 phi_samples = 100
 
+theta_range = (np.pi/2 + -np.pi/10, np.pi/2 + np.pi/10)
+phi_range = (np.pi + -np.pi/20, np.pi + np.pi/20)
+
 # Camera position
 
 l_cam = 6.75
@@ -18,8 +21,8 @@ phi_cam = 0
 
 # Get meshgrid
 
-thetas = np.linspace(0, np.pi, theta_samples)
-phis = np.linspace(0, 2*np.pi, phi_samples)
+thetas = np.linspace(theta_range[0], theta_range[1], theta_samples)
+phis = np.linspace(phi_range[0], phi_range[1], phi_samples)
 
 # Get mapping to celestial spheres from camera sky
 
@@ -28,12 +31,10 @@ celestial_signs = np.zeros((theta_samples,phi_samples))
 
 for n, theta_cs in enumerate(thetas):
     for m, phi_cs in enumerate(phis):
-        print(n, m)
+        print(n, m, end = "\r")
 
         sol = get_ray_origin(l_cam, theta_cam, phi_cam, theta_cs, phi_cs)
         l, theta, phi, _, _ = sol.y[:,-1]
-        theta = np.abs(theta) % np.pi
-        phi = np.abs(phi) % (2*np.pi)
 
         celestial_angles[n, m] = (theta, phi)
         celestial_signs[n, m] = np.sign(l)
@@ -44,7 +45,7 @@ celestial_map_theta = RegularGridInterpolator((thetas, phis), celestial_angles[:
 celestial_map_phi = RegularGridInterpolator((thetas, phis), celestial_angles[:,:,1])
 celestial_map_sign = RegularGridInterpolator((thetas, phis), celestial_signs)
 
-celestial_map = (celestial_map_theta, celestial_map_phi, celestial_map_sign)
+celestial_map = (celestial_map_theta, celestial_map_phi, celestial_map_sign, theta_range, phi_range)
 
 # Save map
 
