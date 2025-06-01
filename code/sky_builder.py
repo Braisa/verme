@@ -1,17 +1,17 @@
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageChops
 import pickle
 from ray_solver import get_ray_origin
 
 # Map parameters
 
-map_name = "fig7b_test_2pi"
+map_name = "fig7b_test_0"
 
 # File parameters
 
 debug = True
 
-save_name = "fig7b_test_2pi"
+save_name = "fig7b_test_0"
 output_width = 300
 output_height = 300
 
@@ -31,6 +31,9 @@ lower_sphere_path = "assets/InterstellarWormhole_Fig6a-1750x875.jpg"
 
 upper_sphere_image = Image.open(upper_sphere_path)
 lower_sphere_image = Image.open(lower_sphere_path)
+
+upper_sphere_image = ImageChops.offset(upper_sphere_image, xoffset = int((1750/2)-1320), yoffset = int((875/2)-350))
+upper_sphere_image.save("results/BLABAL.jpg")
 
 upper_sphere_map = np.asarray(upper_sphere_image)
 lower_sphere_map = np.asarray(lower_sphere_image)

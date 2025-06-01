@@ -24,14 +24,14 @@ def get_ray_origin(l0, theta0, phi0, theta_cs, phi_cs):
 
     # Incoming light ray momenta
 
-    p_l = lambda l, theta : -1 * np.cos(phi_cs) * np.sin(theta_cs)
-    p_theta = lambda l, theta : r(l) * np.cos(theta_cs)
-    p_phi = lambda l, theta : r(l) * np.sin(theta) * (-1 * np.sin(phi_cs) * np.sin(theta_cs))
+    p_l_0 = -1 * np.cos(phi_cs) * np.sin(theta_cs)
+    p_theta_0 = r(l0) * np.cos(theta_cs)
+    p_phi_0 = -1 * r(l0) * np.sin(theta0) * np.sin(phi_cs) * np.sin(theta_cs)
 
     # Conserved quantities
 
-    b = p_phi(l0, theta0)
-    B = np.sqrt(p_theta(l0, theta0)**2 + b**2 * np.sin(theta0)**-2)
+    b = p_phi_0
+    B = np.sqrt(p_theta_0**2 + b**2 * np.sin(theta0)**-2)
 
     # Ray differential equations
     # coords = (l, theta, phi, p_l, p_theta)
@@ -45,7 +45,7 @@ def get_ray_origin(l0, theta0, phi0, theta_cs, phi_cs):
         
     # Initial coordinates
     
-    initial_coords = (l0, theta0, phi0, p_l(l0, theta0), p_theta(l0, theta0))
+    initial_coords = (l0, theta0, phi0, p_l_0, p_theta_0)
 
     # Runge-Kutta solving
 

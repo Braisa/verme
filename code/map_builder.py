@@ -6,7 +6,7 @@ import pickle
 
 # Map parameters
 
-save_name = "fig7b_test_2pi"
+save_name = "fig7b_test_0"
 theta_samples = 100
 phi_samples = 100
 
@@ -17,7 +17,7 @@ phi_range = (np.pi-np.pi/20, np.pi+np.pi/20)
 
 l_cam = 6.75
 theta_cam = np.pi/2
-phi_cam = 2*np.pi
+phi_cam = 0
 
 # Get angles
 
