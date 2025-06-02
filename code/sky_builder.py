@@ -5,7 +5,7 @@ from ray_solver import get_ray_origin
 
 # Map parameters
 
-map_name = "fig7c"
+map_name = "fig9b"
 
 # File parameters
 
