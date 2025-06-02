@@ -5,29 +5,29 @@ from ray_solver import get_ray_origin
 
 # Map parameters
 
-map_name = "fig11"
+map_name = "fig7c"
 
 # File parameters
 
 debug = False
 
 save_name = map_name
-output_width = 300
-output_height = 300
+output_width = 1000
+output_height = 1000
 
 theta_range = (np.pi/2-np.pi/20, np.pi/2+np.pi/20)
-#phi_range = (np.pi-np.pi/20, np.pi+np.pi/20)
-phi_range = (0, np.pi/20)
+phi_range = (np.pi-np.pi/20, np.pi+np.pi/20)
+#phi_range = (0, np.pi/20)
 
 # Open celestial spheres' images
 
-upper_sphere_path = "assets/InterstellarWormhole_Fig10.jpg"
-lower_sphere_path = "assets/InterstellarWormhole_Fig6b-1750x875.jpg"
+upper_sphere_path = "assets/InterstellarWormhole_Fig6b-1750x875.jpg"
+lower_sphere_path = "assets/InterstellarWormhole_Fig6a-1750x875.jpg"
 
 upper_sphere_image = Image.open(upper_sphere_path)
 lower_sphere_image = Image.open(lower_sphere_path)
 
-#upper_sphere_image = ImageChops.offset(upper_sphere_image, xoffset = int((1750/2)-1320), yoffset = int((875/2)-350))
+upper_sphere_image = ImageChops.offset(upper_sphere_image, xoffset = int((1750/2)-1320), yoffset = int((875/2)-350))
 
 upper_sphere_map = np.asarray(upper_sphere_image)
 lower_sphere_map = np.asarray(lower_sphere_image)

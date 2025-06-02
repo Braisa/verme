@@ -4,7 +4,7 @@ from scipy.integrate import solve_ivp
 # Wormhole parameters
 
 rho = 1
-a = .5
+a = 5
 W = .05
 M = W / 1.42953
 
