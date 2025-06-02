@@ -1,28 +1,22 @@
 import numpy as np
-from PIL import Image, ImageChops
+from PIL import Image, ImageChops, ImageOps
 import pickle
 from ray_solver import get_ray_origin
 
 # Map parameters
 
-map_name = "fig7b_test_0"
+map_name = "fig7c"
 
 # File parameters
 
-debug = True
+debug = False
 
-save_name = "fig7b_test_0"
+save_name = "fig7c"
 output_width = 300
 output_height = 300
 
 theta_range = (np.pi/2-np.pi/20, np.pi/2+np.pi/20)
 phi_range = (np.pi-np.pi/20, np.pi+np.pi/20)
-
-# Camera position
-
-l_cam = 6.75
-theta_cam = np.pi/2
-phi_cam = 0
 
 # Open celestial spheres' images
 
@@ -33,7 +27,6 @@ upper_sphere_image = Image.open(upper_sphere_path)
 lower_sphere_image = Image.open(lower_sphere_path)
 
 upper_sphere_image = ImageChops.offset(upper_sphere_image, xoffset = int((1750/2)-1320), yoffset = int((875/2)-350))
-upper_sphere_image.save("results/BLABAL.jpg")
 
 upper_sphere_map = np.asarray(upper_sphere_image)
 lower_sphere_map = np.asarray(lower_sphere_image)
@@ -63,17 +56,13 @@ for n, theta_cs in enumerate(thetas):
         theta = celestial_map_theta((theta_cs, phi_cs)) % np.pi
         phi = celestial_map_phi((theta_cs, phi_cs)) % (2*np.pi)
 
-        phi_move = .5 * (phi/np.pi + np.sign(np.pi - phi))
-
         if celestial_signs((theta_cs, phi_cs)) > 0:
             sphere_n = int(np.fix(upper_sphere_image.size[1] * theta/np.pi)) % upper_sphere_image.size[1]
             sphere_m = int(np.fix(upper_sphere_image.size[0] * phi/2/np.pi)) % upper_sphere_image.size[0]
-            #sphere_m = int(np.fix(upper_sphere_image.size[0] * phi_move))
             camera_sky_map[n, m] = upper_sphere_map[sphere_n, sphere_m]
         elif celestial_signs((theta_cs, phi_cs)) < 0:
             sphere_n = int(np.fix(lower_sphere_image.size[1] * theta/np.pi)) % lower_sphere_image.size[1]
             sphere_m = int(np.fix(lower_sphere_image.size[0] * phi/2/np.pi)) % lower_sphere_image.size[0]
-            #sphere_m = int(np.fix(lower_sphere_image.size[0] * phi_move))
             camera_sky_map[n, m] = lower_sphere_map[sphere_n, sphere_m]
         
         if debug:

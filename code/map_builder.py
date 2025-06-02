@@ -6,7 +6,7 @@ import pickle
 
 # Map parameters
 
-save_name = "fig7b_test_0"
+save_name = "fig7c"
 theta_samples = 100
 phi_samples = 100
 
@@ -15,7 +15,7 @@ phi_range = (np.pi-np.pi/20, np.pi+np.pi/20)
 
 # Camera position
 
-l_cam = 6.75
+l_cam = 11.25
 theta_cam = np.pi/2
 phi_cam = 0
 
@@ -35,6 +35,10 @@ for n, theta_cs in enumerate(thetas):
 
         sol = get_ray_origin(l_cam, theta_cam, phi_cam, theta_cs, phi_cs)
         l, theta, phi, _, _ = sol.y[:,-1]
+
+        # Account for frame change
+        if l * l_cam < 0:
+            phi = 2*np.pi - phi
 
         celestial_angles[n, m] = (theta, phi)
         celestial_signs[n, m] = np.sign(l)
