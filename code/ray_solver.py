@@ -5,7 +5,7 @@ from scipy.integrate import solve_ivp
 
 rho = 1
 a = .5
-W = .43
+W = .05
 M = W / 1.42953
 
 # Metric radial function
