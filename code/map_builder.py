@@ -6,7 +6,7 @@ import pickle
 
 # Map parameters
 
-save_name = "fig7c"
+save_name = "fig9b"
 theta_samples = 100
 phi_samples = 100
 
@@ -15,7 +15,7 @@ phi_range = (np.pi-np.pi/20, np.pi+np.pi/20)
 
 # Camera position
 
-l_cam = 11.25
+l_cam = 10
 theta_cam = np.pi/2
 phi_cam = 0
 

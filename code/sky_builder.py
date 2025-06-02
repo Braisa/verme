@@ -5,13 +5,13 @@ from ray_solver import get_ray_origin
 
 # Map parameters
 
-map_name = "fig7c"
+map_name = "fig9b"
 
 # File parameters
 
 debug = False
 
-save_name = "fig7c"
+save_name = map_name
 output_width = 300
 output_height = 300
 
