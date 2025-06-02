@@ -5,7 +5,7 @@ from ray_solver import get_ray_origin
 
 # Map parameters
 
-map_name = "fig9b_out"
+map_name = "fig11_inv"
 
 # File parameters
 
@@ -15,14 +15,14 @@ save_name = map_name
 output_width = 1000
 output_height = 1000
 
-theta_range = (np.pi/2-np.pi/10, np.pi/2+np.pi/10)
-phi_range = (np.pi-np.pi/10, np.pi+np.pi/10)
+theta_range = (np.pi/2-np.pi/15, np.pi/2+np.pi/15)
+phi_range = (np.pi-np.pi/15, np.pi+np.pi/15)
 #phi_range = (0, np.pi/20)
 
 # Open celestial spheres' images
 
-upper_sphere_path = "assets/InterstellarWormhole_Fig6b-1750x875.jpg"
-lower_sphere_path = "assets/InterstellarWormhole_Fig6a-1750x875.jpg"
+upper_sphere_path = "assets/InterstellarWormhole_Fig6a-1750x875.jpg"
+lower_sphere_path = "assets/InterstellarWormhole_Fig10.jpg"
 
 upper_sphere_image = Image.open(upper_sphere_path)
 lower_sphere_image = Image.open(lower_sphere_path)
@@ -48,8 +48,6 @@ camera_sky_map = np.zeros((output_height, output_width, 3), dtype = np.uint8)
 if debug:
     debug_map = np.zeros((output_height, output_width), dtype = np.uint8)
 
-original_map = np.zeros((output_height, output_width, 3), dtype = np.uint8)
-
 for n, theta_cs in enumerate(thetas):
     for m, phi_cs in enumerate(phis):
 
@@ -57,8 +55,6 @@ for n, theta_cs in enumerate(thetas):
         
         theta = celestial_map_theta((theta_cs, phi_cs)) % np.pi
         phi = celestial_map_phi((theta_cs, phi_cs)) % (2*np.pi)
-
-        original_map[n, m] = upper_sphere_map[int(np.fix(upper_sphere_image.size[1] * theta_cs/np.pi)) % upper_sphere_image.size[1], int(np.fix(upper_sphere_image.size[0] * phi_cs/2/np.pi)) % upper_sphere_image.size[0]]
 
         if celestial_signs((theta_cs, phi_cs)) > 0:
             sphere_n = int(np.fix(upper_sphere_image.size[1] * theta/np.pi)) % upper_sphere_image.size[1]
@@ -78,5 +74,3 @@ camera_sky_image.save(f"results/{save_name}.jpg")
 if debug:
     debug_image = Image.fromarray(debug_map)
     debug_image.save(f"results/debug_{save_name}.jpg")
-
-Image.fromarray(original_map).save(f"results/{save_name}_original.jpg")
