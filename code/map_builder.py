@@ -10,12 +10,12 @@ save_name = "fig7b"
 theta_samples = 100
 phi_samples = 100
 
-theta_range = (0, np.pi)
-phi_range = (0, 2*np.pi)
+theta_range = (np.pi/2 + -np.pi/10, np.pi/2 + np.pi/10)
+phi_range = (np.pi + -np.pi/20, np.pi + np.pi/20)
 
 # Camera position
 
-l_cam = 6.75 * 50
+l_cam = 6.75
 theta_cam = np.pi/2
 phi_cam = 0
 
@@ -33,7 +33,8 @@ for n, theta_cs in enumerate(thetas):
     for m, phi_cs in enumerate(phis):
         print(n, m, end = "\r")
 
-        l, theta, phi, _, _ = get_ray_origin(l_cam, theta_cam, phi_cam, theta_cs, phi_cs)
+        sol = get_ray_origin(l_cam, theta_cam, phi_cam, theta_cs, phi_cs)
+        l, theta, phi, _, _ = sol.y[:,-1]
 
         celestial_angles[n, m] = (theta, phi)
         celestial_signs[n, m] = np.sign(l)
