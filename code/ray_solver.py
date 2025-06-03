@@ -1,26 +1,23 @@
 import numpy as np
 from scipy.integrate import solve_ivp
 
-# Wormhole parameters
-
 rho = 1
-a = .005
-W = .01
-M = W / 1.42953
 
-# Metric radial function
-
-x = lambda l : 2*(np.abs(l) - a)/(np.pi*M)
-r = lambda l : rho + np.heaviside(np.abs(l)/a -1, 1) * M * (x(l)*np.arctan(x(l)) - .5*np.log(1+x(l)**2))
-dr_dl = lambda l : np.heaviside(np.abs(l)/a -1, 1) * 2/np.pi * np.sign(l) * np.arctan(x(l))
-
-def get_ray_origin(l0, theta0, phi0, theta_cs, phi_cs):
+def get_ray_origin(a, W, l0, theta0, phi0, theta_cs, phi_cs):
 
     """
 
     Computes parting position for a ray received by a camera standing at the point (l0, theta0, phi0) at t = 0 that is looking at the point (theta_cs, phi_cs).
 
     """
+
+    M = W / 1.42953
+
+    # Metric radial function
+
+    x = lambda l : 2*(np.abs(l) - a)/(np.pi*M)
+    r = lambda l : rho + np.heaviside(np.abs(l)/a -1, 1) * M * (x(l)*np.arctan(x(l)) - .5*np.log(1+x(l)**2))
+    dr_dl = lambda l : np.heaviside(np.abs(l)/a -1, 1) * 2/np.pi * np.sign(l) * np.arctan(x(l))
 
     # Incoming light ray momenta
 
