@@ -6,7 +6,7 @@ from ray_solver import get_ray_origin
 theta_range = (np.pi/2-np.pi/15, np.pi/2+np.pi/15)
 phi_range = (np.pi-np.pi/15, np.pi+np.pi/15)
 
-def create_image(save_name, size, center_theta, center_phi):
+def create_image(save_name, map_name, size, center_theta, center_phi):
 
     # Open celestial spheres' images
 
@@ -27,7 +27,7 @@ def create_image(save_name, size, center_theta, center_phi):
 
     # Open map
 
-    with open(f"maps/map_{save_name}.pck", "rb") as file_handle:
+    with open(f"maps/map_{map_name}.pck", "rb") as file_handle:
         celestial_map_theta, celestial_map_phi, celestial_signs = pickle.load(file_handle)
 
     # Get angles
@@ -61,3 +61,16 @@ def create_image(save_name, size, center_theta, center_phi):
     camera_sky_image.save(f"results/{save_name}.jpg")
 
     print()
+
+if __name__ == "__main__":
+
+    save_name = input("Input a name for the save file: ")
+    map_name = input("Input the name of the map file that will be used: ")
+    image_size = int(input("Input the size of the final image, in pixels: "))
+
+    center_theta = float(input("Input the theta position of the wormhole in the sky, in degrees: "))
+    center_phi = float(input("Input the phi position of the wormhole in the sky, in degrees: "))
+
+    create_image(save_name = save_name, map_name = map_name, size = image_size, center_theta = center_theta, center_phi = center_phi)
+
+    print("Image saved!")

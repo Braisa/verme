@@ -16,8 +16,8 @@ l_cam = float(input("Input the position (l) of the camera, in terms of the wormh
 theta_cam = float(input("Input the theta position of the camera, in degrees: ")) * np.pi/180
 phi_cam = float(input("Input the phi position of the camera, in degrees: ")) * np.pi/180
 
-create_map(save_name, sample_amount, a, W, l_cam, theta_cam, phi_cam)
+create_map(save_name = save_name, samples = sample_amount, a = a, W= W, l_cam = l_cam, theta_cam = theta_cam, phi_cam = phi_cam)
 
-create_image(save_name, image_size, center_theta, center_phi)
+create_image(save_name = save_name, map_name = save_name, size = image_size, center_theta = center_theta, center_phi = center_phi)
 
 print("Image saved!")

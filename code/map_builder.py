@@ -51,3 +51,19 @@ def create_map(save_name, samples, a, W, l_cam, theta_cam, phi_cam):
         pickle.dump(celestial_map, file_handle)
 
     print()
+
+if __name__ == "__main__":
+
+    save_name = input("Input a name for the save file: ")
+    sample_amount = int(input("Input the amount of samples for the map building: "))
+
+    a = float(input("Input the length (a) of the wormhole, in terms of its radius: "))
+    W = float(input("Input the lensing width (W) of the wormhole, in terms of its radius: "))
+
+    l_cam = float(input("Input the position (l) of the camera, in terms of the wormhole's radius: "))
+    theta_cam = float(input("Input the theta position of the camera, in degrees: ")) * np.pi/180
+    phi_cam = float(input("Input the phi position of the camera, in degrees: ")) * np.pi/180
+
+    create_map(save_name = save_name, samples = sample_amount, a = a, W = W, l_cam = l_cam, theta_cam = theta_cam, phi_cam = phi_cam)
+
+    print("Map saved!")
