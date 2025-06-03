@@ -13,7 +13,7 @@ r = lambda l : rho + np.heaviside(np.abs(l)/a -1, 1) * M * (x(l)*np.arctan(x(l))
 fig, ax = plt.subplots()
 
 l_lin = np.linspace(0.95*a, 1.3*a, 1000)
-rs_lin = np.linspace(0.95*a - a, 1.3*a - a, 1000)
+rs_lin = np.linspace(0, 1.3*a - a, 1000)
 
 ax.plot(l_lin - a, r(l_lin) - rho, ls = "solid", color = "tab:orange", label = "Burato de verme")
 ax.plot(rs_lin, rs_lin - 2*M, ls = "dashed", color = "tab:blue", label = "Schwarzschild")
@@ -26,6 +26,7 @@ ax.set_xticklabels(("-0.05a", "0", "0.1a", "0.2a", "0.3a", "2M"))
 ax.set_xlabel(r"$|l| - a$")
 ax.set_ylabel(r"$r(l) - \rho$")
 
-ax.set_xlim(left = np.min(rs_lin), right = np.max(rs_lin))
+ax.set_xlim(left = np.min(-.05*a), right = np.max(rs_lin))
+ax.set_ylim(bottom = -2*M)
 
 fig.savefig("results/metric_comparison.pdf", dpi = 300, bbox_inches = "tight")
